@@ -49,11 +49,9 @@
     <script>
       $(function(){
         $('.menu__list').children('li').hover(function() {
-          $(this).find('ul').slideUp().stop(100);
-          $(this).find('ul').slideDown();
+          $(this).find('.menu__list__childList').stop().slideDown();
         },function() {
-          $(this).find('ul').slideDown().stop(100);
-          $(this).find('ul').slideUp();
+          $(this).find('.menu__list__childList').stop().slideUp();
         })
       });
     </script>
