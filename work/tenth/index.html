@@ -22,27 +22,7 @@
           <button class="search__btn" data-js="search-btn">検索する</button>
         </div>
         <div class="message"></div>
-        <ul class="lists">
-          <li class="lists__item">
-            <div class="lists__item__inner">
-              <a href="" class="lists__item__link" target="_blank">
-                <img src="" class="lists__item__img" alt="">
-                <p class="lists__item__detail">作品名：</p>
-                <p class="lists__item__detail">作者　：</p>
-                <p class="lists__item__detail">出版社：</p>
-              </a>
-            </div>
-          </li>
-        </ul>
-        <div class="pager" data-js="pager">
-          <div class="counter">
-            <span class="counter-current"></span>/<span class="counter-all"></span>
-          </div>
-          <div class="btn-wrapper">
-            <a class="btn-item" data-js="page-prev" href="">前へ</a>
-            <a class="btn-item" data-js="page-next" href="">次へ</a>
-          </div>
-        </div>
+        <ul class="lists"></ul>
       </div>
     </div>
     <script src="../../common/js/jquery.js"></script>
@@ -82,12 +62,33 @@
       // $.each(配列, function functionName() {}) 配列に対しての繰り返し処理が行えます。
       // $.ajax({}) 外部ファイルやURLに対してデータをリクエストすることができます。
       //
+      // <li class="lists__item">
+      //  <div class="lists__item__inner">
+      //    <a href="" class="lists__item__link" target="_blank">
+      //      <img src="" class="lists__item__img" alt="">
+      //      <p class="lists__item__detail">作品名：</p>
+      //      <p class="lists__item__detail">作者　：</p>
+      //      <p class="lists__item__detail">出版社：</p>
+      //    </a>
+      //  </div>
+      // </li>
+      //
       // 取得できた書籍の件数をもとに、ページャを作成しましょう
       // ページャの条件
       // ├ 「現在のページ数」と「全てのページ数」が表示されている
       // ├ 「前へ」と「次へ」のボタンがある
       // ├ 1ページ目では「前へ」に、最後のページでは「次へ」にdisabledクラスをつけて非活性（使用不能）にする
       // └ 1ページしかない場合はどちらもdisabledクラスをつけて非活性にする
+      //
+      // <div class="pager" data-js="pager">
+      //   <div class="counter">
+      //     <span class="counter-current"></span>/<span class="counter-all"></span>
+      //   </div>
+      //   <div class="btn-wrapper">
+      //     <a class="btn-item" data-js="page-prev" href="">前へ</a>
+      //     <a class="btn-item" data-js="page-next" href="">次へ</a>
+      //   </div>
+      // </div>
     </script>
   </body>
 </html>
