@@ -63,13 +63,15 @@
               hits: 20
             },
           }).done(function(data) {
-            result(data);
+            for (var i = 0; i < 20; i++){
+              var book =[image, title, author, publisherName];
+              var image = data.Items[i].Item.mediumImageUrl;
+              var title = data.Items[i].Item.title;
+              var author = data.Items[i].Item.author;
+              var publisherName = data.Items[i].Item.publisherName;
+            }
             });
           });
-          
-          function result (data) {
-            console.log(data);
-          }
       });
       
       // 楽天ブックスの総合検索APIを使って製作してください。
