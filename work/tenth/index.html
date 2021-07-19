@@ -31,15 +31,16 @@
       $(function(){
         $('.search__btn').on('click', function () {
           getBooks(0);
+          $('.btn-wrapper').find('a').on('click', function(e){
+            e.preventDefault();
+          })
         })
         
-        $('[data-js="page-prev"]').on('click',function (e) {
-          e.preventDefault();
+        $('[data-js="page-prev"]').on('click',function () {
           getBooks(x + 1);
         })
         
-        $('[data-js="page-next"]').on('click',function (e) {
-          e.preventDefault();
+        $('[data-js="page-next"]').on('click',function () {
           getBooks(x - 1);
         })
         
