@@ -33,18 +33,17 @@
           getBooks(0);
         })
         
-        $('[data-js="page-prev"]').on('click', function (e) {
-          e.preventDefault();
-          getBooks(+1);
+        $('[data-js="page-prev"]').on('click',function () {
+          getBooks(1);
         })
         
-        $('[data-js="page-next"]').on('click', function (e) {
-          e.preventDefault();
+        $('[data-js="page-next"]').on('click',function () {
           getBooks(-1);
         })
         
-        function getBooks(x) {
+        function getBooks(y) {
           var inputword = $('.search__text__input').val();
+          var x = 0 + y;
           $.ajax({
             url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
             type: 'GET',
