@@ -29,9 +29,22 @@
     <script src="./js/appid.js"></script>
     <script>
       $(function(){
-        $('.search__btn').on('click', function(){
+        $('.search__btn').on('click', function () {
+          getBooks(0);
+        })
+        
+        $('[data-js="page-prev"]').on('click', function (e) {
+          e.preventDefault();
+          getBooks(+1);
+        })
+        
+        $('[data-js="page-next"]').on('click', function (e) {
+          e.preventDefault();
+          getBooks(-1);
+        })
+        
+        function getBooks(x) {
           var inputword = $('.search__text__input').val();
-          var x = 0;
           $.ajax({
             url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
             type: 'GET',
@@ -40,7 +53,7 @@
               applicationId: appId,
               booksGenreId: '001',
               keyword: inputword,
-              page: 1+x,
+              page: 1 + x,
               hits: 20
             },
           }).done(function(data) {
@@ -56,14 +69,11 @@
               var publisherName = data.Items[i].Item.publisherName;
               lists += '<li class=lists__item><div class=lists__item__inner><a href='+ url + ' class=lists__item__link target=_blank><img src='+ image +' class=lists__item__img alt=><p class=lists__item__detail>作品名：'+ title +'</p><p class=lists__item__detail>作者　：'+ author +'</p><p class=lists__item__detail>出版社：'+ publisherName +'</p></a></div></li>';
             });
+            pager += '<div class="pager" data-js="pager"><div class="counter"><span class="counter-current"></span>' + currentpage + ' / ' + allpage + '<span class="counter-all"></span></div><div class="btn-wrapper"><a class="btn-item" data-js="page-prev" href="">前へ</a><a class="btn-item" data-js="page-next" href="">次へ</a></div></div>';
             $('.lists').prepend(lists);
-            pager += '<div class="pager" data-js="pager"><div class="counter"><span class="counter-current"></span>' + currentpage + ' / ' + allpage + '<span class="counter-all"></span></div><div class="btn-wrapper"><a class="btn-item" data-js="page-prev" href="">前へ</a><a class="btn-item" data-js="page-next" href="">次へ</a></div></div>'
             $('.container').append(pager);
-            $('.btn-item').on('click', function(){
-              x +=1;
-            });
           });
-        });
+        }
       });
       
       // 楽天ブックスの総合検索APIを使って製作してください。
