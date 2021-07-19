@@ -33,11 +33,13 @@
           getBooks(0);
         })
         
-        $('[data-js="page-prev"]').on('click',function () {
+        $('[data-js="page-prev"]').on('click',function (e) {
+          e.preventDefault();
           getBooks(x + 1);
         })
         
-        $('[data-js="page-next"]').on('click',function () {
+        $('[data-js="page-next"]').on('click',function (e) {
+          e.preventDefault();
           getBooks(x - 1);
         })
         
