@@ -34,16 +34,15 @@
         })
         
         $('[data-js="page-prev"]').on('click',function () {
-          getBooks(1);
+          getBooks(x + 1);
         })
         
         $('[data-js="page-next"]').on('click',function () {
-          getBooks(-1);
+          getBooks(x - 1);
         })
         
-        function getBooks(y) {
+        function getBooks(x) {
           var inputword = $('.search__text__input').val();
-          var x = 0 + y;
           $.ajax({
             url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
             type: 'GET',
