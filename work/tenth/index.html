@@ -29,22 +29,30 @@
     <script src="./js/appid.js"></script>
     <script>
       $(function(){
+        var pageNum = 0;
+        
         $('.search__btn').on('click', function () {
-          getBooks(0);
-          $('.btn-wrapper').find('a').on('click', function(e){
-            e.preventDefault();
-          })
+          pageNum = 1;
+          getBooks();
         })
         
-        $('[data-js="page-prev"]').on('click',function () {
-          getBooks(x + 1);
+        $('body').on('click', '[data-js="page-prev"]', function (e) {
+          $('ul').empty();
+          $('.pager').remove();
+          pageNum = pageNum - 1;
+          getBooks();
+          e.preventDefault();
         })
         
-        $('[data-js="page-next"]').on('click',function () {
-          getBooks(x - 1);
+        $('body').on('click', '[data-js="page-next"]', function (e) {
+          $('ul').empty();
+          $('.pager').remove();
+          pageNum = pageNum + 1;
+          getBooks();
+          e.preventDefault();
         })
         
-        function getBooks(x) {
+        function getBooks() {
           var inputword = $('.search__text__input').val();
           $.ajax({
             url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
@@ -54,7 +62,7 @@
               applicationId: appId,
               booksGenreId: '001',
               keyword: inputword,
-              page: 1 + x,
+              page: pageNum,
               hits: 20
             },
           }).done(function(data) {
@@ -73,6 +81,12 @@
             pager += '<div class="pager" data-js="pager"><div class="counter"><span class="counter-current"></span>' + currentpage + ' / ' + allpage + '<span class="counter-all"></span></div><div class="btn-wrapper"><a class="btn-item" data-js="page-prev" href="">前へ</a><a class="btn-item" data-js="page-next" href="">次へ</a></div></div>';
             $('.lists').prepend(lists);
             $('.container').append(pager);
+            if(pageNum = 1) {
+              $('body').find('[data-js="page-prev"]').addClass('disabled');
+            }
+            if(pageNum = allpage) {
+              $('body').find('[data-js="page-next"]').addClass('disabled');
+            }
           });
         }
       });
