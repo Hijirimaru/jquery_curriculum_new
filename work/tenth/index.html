@@ -32,7 +32,9 @@
         var pageNum = 0;
         
         $('.search__btn').on('click', function () {
+          var inputword = $('.search__text__input').val();
           pageNum = 1;
+          return $('.search__text__input').val();
           reset();
           getBooks();
         })
@@ -70,7 +72,6 @@
         }
         
         function getBooks() {
-          var inputword = $('.search__text__input').val();
           var error = '';
           $.ajax({
             url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
