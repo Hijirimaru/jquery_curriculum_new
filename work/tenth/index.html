@@ -32,10 +32,8 @@
         var pageNum = 0;
         
         $('.search__btn').on('click', function () {
-          $('ul').empty();
-          $('.pager').remove();
-          $('.error-massage').remove();
           pageNum = 1;
+          reset();
           getBooks();
         })
         
@@ -43,9 +41,8 @@
           if($(this).hasClass('disabled') ){
             disabled(e);
           } else {
-            $('ul').empty();
-            $('.pager').remove();
             pageNum = pageNum - 1;
+            reset();
             getBooks();
             e.preventDefault();
           }
@@ -55,9 +52,8 @@
           if($(this).hasClass('disabled')){
             disabled(e);
           } else {
-            $('ul').empty();
-            $('.pager').remove();
             pageNum = pageNum + 1;
+            reset();
             getBooks();
             e.preventDefault();
           }
@@ -65,6 +61,12 @@
         
         function disabled(e) {
           e.preventDefault();
+        }
+        
+        function reset() {
+          $('ul').empty();
+          $('.pager').remove();
+          $('.error-massage').remove();
         }
         
         function getBooks() {
@@ -89,7 +91,7 @@
             var allpage = data.pageCount;
             if(allpage == 0) {
               error += '<p class="error-massage">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</p>';
-              $('.error-massage').remove();
+              reset();
               $('.message').prepend(error);
             } else {
               $.each(data.Items, function (i) {
@@ -113,9 +115,15 @@
               }
             }
           }).fail(function(){
-            error += '<p class="error-massage">リクエスト過多です。<br>しばらく時間を置いてからお試しください。</p>';
-            $('.error-massage').remove();
-            $('.message').prepend(error);
+            if(inputword == '') {
+              error += '<p class="error-massage">検索文字が入力されていません。</p>';
+              reset();
+              $('.message').prepend(error);
+            } else {
+              error += '<p class="error-massage">リクエスト過多です。<br>しばらく時間を置いてからお試しください。</p>';
+              reset();
+              $('.message').prepend(error);
+            }
           });
         }
       });
