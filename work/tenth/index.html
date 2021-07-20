@@ -30,11 +30,11 @@
     <script>
       $(function(){
         var pageNum = 0;
+        var inputword = '';
         
         $('.search__btn').on('click', function () {
-          var inputword = $('.search__text__input').val();
+          inputword = $('.search__text__input').val();
           pageNum = 1;
-          return $('.search__text__input').val();
           reset();
           getBooks();
         })
@@ -117,7 +117,6 @@
             }
           }).fail(function(jqXHR){
             var errorcode = jqXHR.status
-            console.log(errorcode);
             if(errorcode == 400) {
               error += '<p class="error-massage">検索文字が入力されていません</p>';
               reset();
