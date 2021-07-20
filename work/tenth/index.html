@@ -32,8 +32,6 @@
         var pageNum = 0;
         
         $('.search__btn').on('click', function () {
-          $('ul').empty();
-          $('.pager').remove();
           pageNum = 1;
           getBooks();
         })
@@ -56,6 +54,7 @@
         
         function getBooks() {
           var inputword = $('.search__text__input').val();
+          var error = '';
           $.ajax({
             url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
             type: 'GET',
@@ -80,15 +79,28 @@
               var publisherName = data.Items[i].Item.publisherName;
               lists += '<li class=lists__item><div class=lists__item__inner><a href='+ url + ' class=lists__item__link target=_blank><img src='+ image +' class=lists__item__img alt=><p class=lists__item__detail>作品名：'+ title +'</p><p class=lists__item__detail>作者　：'+ author +'</p><p class=lists__item__detail>出版社：'+ publisherName +'</p></a></div></li>';
             });
-            pager += '<div class="pager" data-js="pager"><div class="counter"><span class="counter-current"></span>' + currentpage + ' / ' + allpage + '<span class="counter-all"></span></div><div class="btn-wrapper"><a class="btn-item" data-js="page-prev" href="">前へ</a><a class="btn-item" data-js="page-next" href="">次へ</a></div></div>';
-            $('.lists').prepend(lists);
-            $('.container').append(pager);
-            if(pageNum == 1) {
-              $('body').find('[data-js="page-prev"]').addClass('disabled');
+            if(allpage == 0) {
+              error += '<p class="error-massage">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</p>';
+              $('.error-massage').remove();
+              $('.message').prepend(error);
+            } else {
+              $('ul').empty();
+              $('.pager').remove();
+              $('.error-massage').remove();
+              pager += '<div class="pager" data-js="pager"><div class="counter"><span class="counter-current"></span>' + currentpage + ' / ' + allpage + '<span class="counter-all"></span></div><div class="btn-wrapper"><a class="btn-item" data-js="page-prev" href="">前へ</a><a class="btn-item" data-js="page-next" href="">次へ</a></div></div>';
+              $('.lists').prepend(lists);
+              $('.container').append(pager);
+              if(pageNum == 1) {
+                $('body').find('[data-js="page-prev"]').addClass('disabled');
+              }
+              if(pageNum == allpage) {
+                $('body').find('[data-js="page-next"]').addClass('disabled');
+              }
             }
-            if(pageNum == allpage) {
-              $('body').find('[data-js="page-next"]').addClass('disabled');
-            }
+          }).fail(function(){
+            error += '<p class="error-massage">リクエスト過多です。<br>しばらく時間を置いてからお試しください。</p>';
+            $('.error-massage').remove();
+            $('.message').prepend(error);
           });
         }
       });
