@@ -32,25 +32,40 @@
         var pageNum = 0;
         
         $('.search__btn').on('click', function () {
+          $('ul').empty();
+          $('.pager').remove();
+          $('.error-massage').remove();
           pageNum = 1;
           getBooks();
         })
         
         $('body').on('click', '[data-js="page-prev"]', function (e) {
-          $('ul').empty();
-          $('.pager').remove();
-          pageNum = pageNum - 1;
-          getBooks();
-          e.preventDefault();
+          if($(this).hasClass('disabled') ){
+            disabled(e);
+          } else {
+            $('ul').empty();
+            $('.pager').remove();
+            pageNum = pageNum - 1;
+            getBooks();
+            e.preventDefault();
+          }
         })
         
         $('body').on('click', '[data-js="page-next"]', function (e) {
-          $('ul').empty();
-          $('.pager').remove();
-          pageNum = pageNum + 1;
-          getBooks();
-          e.preventDefault();
+          if($(this).hasClass('disabled')){
+            disabled(e);
+          } else {
+            $('ul').empty();
+            $('.pager').remove();
+            pageNum = pageNum + 1;
+            getBooks();
+            e.preventDefault();
+          }
         })
+        
+        function disabled(e) {
+          e.preventDefault();
+        }
         
         function getBooks() {
           var inputword = $('.search__text__input').val();
@@ -84,9 +99,6 @@
               $('.error-massage').remove();
               $('.message').prepend(error);
             } else {
-              $('ul').empty();
-              $('.pager').remove();
-              $('.error-massage').remove();
               pager += '<div class="pager" data-js="pager"><div class="counter"><span class="counter-current"></span>' + currentpage + ' / ' + allpage + '<span class="counter-all"></span></div><div class="btn-wrapper"><a class="btn-item" data-js="page-prev" href="">前へ</a><a class="btn-item" data-js="page-next" href="">次へ</a></div></div>';
               $('.lists').prepend(lists);
               $('.container').append(pager);
