@@ -84,24 +84,27 @@
           }).done(function(data) {
             var lists = '';
             var pager = '';
+            var i = 0;
             var currentpage = data.page;
             var allpage = data.pageCount;
-            $.each(data.Items, function (i) {
+            if(allpage == 0) {
+              error += '<p class="error-massage">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</p>';
+              $('.error-massage').remove();
+              $('.message').prepend(error);
+            } else {
+              $.each(data.Items, function (i) {
               var url = data.Items[i].Item.itemUrl;
               var image = data.Items[i].Item.largeImageUrl;
               var title = data.Items[i].Item.title;
               var author = data.Items[i].Item.author;
               var publisherName = data.Items[i].Item.publisherName;
               lists += '<li class=lists__item><div class=lists__item__inner><a href='+ url + ' class=lists__item__link target=_blank><img src='+ image +' class=lists__item__img alt=><p class=lists__item__detail>作品名：'+ title +'</p><p class=lists__item__detail>作者　：'+ author +'</p><p class=lists__item__detail>出版社：'+ publisherName +'</p></a></div></li>';
-            });
-            if(allpage == 0) {
-              error += '<p class="error-massage">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</p>';
-              $('.error-massage').remove();
-              $('.message').prepend(error);
-            } else {
+              });
               pager += '<div class="pager" data-js="pager"><div class="counter"><span class="counter-current"></span>' + currentpage + ' / ' + allpage + '<span class="counter-all"></span></div><div class="btn-wrapper"><a class="btn-item" data-js="page-prev" href="">前へ</a><a class="btn-item" data-js="page-next" href="">次へ</a></div></div>';
+              
               $('.lists').prepend(lists);
               $('.container').append(pager);
+              
               if(pageNum == 1) {
                 $('body').find('[data-js="page-prev"]').addClass('disabled');
               }
