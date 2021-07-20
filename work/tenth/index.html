@@ -100,9 +100,10 @@
               var title = data.Items[i].Item.title;
               var author = data.Items[i].Item.author;
               var publisherName = data.Items[i].Item.publisherName;
+              console.log(data);
               lists += '<li class=lists__item><div class=lists__item__inner><a href='+ url + ' class=lists__item__link target=_blank><img src='+ image +' class=lists__item__img alt=><p class=lists__item__detail>作品名：'+ title +'</p><p class=lists__item__detail>作者　：'+ author +'</p><p class=lists__item__detail>出版社：'+ publisherName +'</p></a></div></li>';
               });
-              pager += '<div class="pager" data-js="pager"><div class="counter"><span class="counter-current"></span>' + currentpage + ' / ' + allpage + '<span class="counter-all"></span></div><div class="btn-wrapper"><a class="btn-item" data-js="page-prev" href="">前へ</a><a class="btn-item" data-js="page-next" href="">次へ</a></div></div>';
+              pager += '<div class="pager" data-js="pager"><div class="counter"><span class="counter-current">' + currentpage + '</span>/<span class="counter-all">' + allpage + '</span></div><div class="btn-wrapper"><a class="btn-item" data-js="page-prev" href="">前へ</a><a class="btn-item" data-js="page-next" href="">次へ</a></div></div>';
               
               $('.lists').prepend(lists);
               $('.container').append(pager);
@@ -114,22 +115,28 @@
                 $('body').find('[data-js="page-next"]').addClass('disabled');
               }
             }
-          }).fail(function(){
-            if(inputword == '') {
-              error += '<p class="error-massage">検索文字が入力されていません。</p>';
+          }).fail(function(jqXHR, textStatus, errorTHrown){
+            var errorcode = jqXHR.status
+            console.log(errorcode);
+            if(errorcode == 400) {
+              error += '<p class="error-massage">検索文字が入力されていません</p>';
               reset();
               $('.message').prepend(error);
-            } else {
+            } else if (errorcode == 429) {
               error += '<p class="error-massage">リクエスト過多です。<br>しばらく時間を置いてからお試しください。</p>';
               reset();
               $('.message').prepend(error);
-            }
+            }　else if (errorcode == 0) {
+              error += '<p class="error-massage">通信に失敗しました。インターネットの接続をご確認ください。</p>';
+              reset();
+              $('.message').prepend(error);
+            };
           });
         }
       });
-      
-      // [テンプレ]
-      // <li class="lists__item">
+      // https://webservice.rakuten.co.jp/api/bookstotalsearch/
+      //
+      //<li class="lists__item">
       //  <div class="lists__item__inner">
       //    <a href="" class="lists__item__link" target="_blank">
       //      <img src="" class="lists__item__img" alt="">
