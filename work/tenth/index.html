@@ -37,24 +37,25 @@
         })
         
         $('body').on('click', '[data-js="page-prev"]', function (e) {
+          e.preventDefault();
           $('ul').empty();
           $('.pager').remove();
           pageNum = pageNum - 1;
           getBooks();
-          e.preventDefault();
         })
         
         $('body').on('click', '[data-js="page-next"]', function (e) {
+          e.preventDefault();
           $('ul').empty();
           $('.pager').remove();
           pageNum = pageNum + 1;
           getBooks();
-          e.preventDefault();
         })
         
         function getBooks() {
           var inputword = $('.search__text__input').val();
           var error = '';
+          
           $.ajax({
             url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
             type: 'GET',
@@ -99,6 +100,8 @@
             }
           }).fail(function(){
             error += '<p class="error-massage">リクエスト過多です。<br>しばらく時間を置いてからお試しください。</p>';
+            $('ul').empty();
+            $('.pager').remove();
             $('.error-massage').remove();
             $('.message').prepend(error);
           });
