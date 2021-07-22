@@ -71,8 +71,61 @@
           $('.message').empty();
         }
         
+        function filllist(data) {
+          var lists = '';
+          $.each(data.Items, function (i) {
+                lists += '<li class=lists__item>'+
+                          '<div class=lists__item__inner>'+
+                            '<a href='+ data.Items[i].Item.itemUrl+ ' class=lists__item__link target=_blank>'+
+                              '<img src='+ data.Items[i].Item.largeImageUrl +' class=lists__item__img alt=>'+
+                              '<p class=lists__item__detail>作品名：'+ data.Items[i].Item.title +'</p>'+
+                              '<p class=lists__item__detail>作者　：'+ data.Items[i].Item.author+'</p>'+
+                              '<p class=lists__item__detail>出版社：'+ data.Items[i].Item.publisherName +'</p>'+
+                            '</a>'+
+                          '</div>'+
+                          '</li>';
+              });
+          $('.lists').prepend(lists);
+        }
+        
+        function showpager(data) {
+          var pager = '';
+          pager += '<div class="pager" data-js="pager">'+
+                      '<div class="counter">'+
+                        '<span class="counter-current">' + data.page + '</span>'+
+                        '/<span class="counter-all">' + data.pageCount + '</span>'+
+                      '</div>'+
+                      '<div class="btn-wrapper">'+
+                        '<a class="btn-item" data-js="page-prev" href="">前へ</a>'+
+                        '<a class="btn-item" data-js="page-next" href="">次へ</a>'+
+                      '</div>'+
+                    '</div>';
+          $('.lists').after(pager);
+        }
+        
+        function disablePager(data) {
+          if(pageNum === 1) {
+            $('[data-js="page-prev"]').addClass('disabled');
+          }
+          if(pageNum === data.pageCount) {
+            $('[data-js="page-next"]').addClass('disabled');
+          }
+        }
+        
+        function showMessage(jqXHR) {
+          if(jqXHR.status == 400) {
+              error = '<p class="error-massage">検索文字が入力されていません</p>';
+              $('.message').prepend(error);
+            } else if (jqXHR.status == 429) {
+              error = '<p class="error-massage">リクエスト過多です。<br>しばらく時間を置いてからお試しください。</p>';
+              $('.message').prepend(error);
+            }　else if (jqXHR.status == 0) {
+              error = '<p class="error-massage">通信に失敗しました。インターネットの接続をご確認ください。</p>';
+              $('.message').prepend(error);
+            };
+        }
+        
         function getBooks() {
-          var error = '';
           $.ajax({
             url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
             type: 'GET',
@@ -86,57 +139,20 @@
             },
           }).done(function(data) {
             if(data.hits === 0) {
+              var error = '';
+              pagereset();
               error = '<p class="error-massage">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</p>';
               $('.message').prepend(error);
             } else {
-              var lists = '';
-              $.each(data.Items, function (i) {
-                lists += '<li class=lists__item>'+
-                          '<div class=lists__item__inner>'+
-                            '<a href='+ data.Items[i].Item.itemUrl+ ' class=lists__item__link target=_blank>'+
-                              '<img src='+ data.Items[i].Item.largeImageUrl +' class=lists__item__img alt=>'+
-                              '<p class=lists__item__detail>作品名：'+ data.Items[i].Item.title +'</p>'+
-                              '<p class=lists__item__detail>作者　：'+ data.Items[i].Item.author+'</p>'+
-                              '<p class=lists__item__detail>出版社：'+ data.Items[i].Item.publisherName +'</p>'+
-                            '</a>'+
-                          '</div>'+
-                          '</li>';
-              });
-              $('.lists').prepend(lists);
+              filllist(data);
               
-              var pager = '';
-              pager += '<div class="pager" data-js="pager">'+
-                          '<div class="counter">'+
-                            '<span class="counter-current">' + data.page + '</span>'+
-                            '/<span class="counter-all">' + data.pageCount + '</span>'+
-                          '</div>'+
-                          '<div class="btn-wrapper">'+
-                            '<a class="btn-item" data-js="page-prev" href="">前へ</a>'+
-                            '<a class="btn-item" data-js="page-next" href="">次へ</a>'+
-                          '</div>'+
-                        '</div>';
-              $('.lists').after(pager);
+              showpager(data);
               
-              if(pageNum === 1) {
-                $('[data-js="page-prev"]').addClass('disabled');
-              }
-              if(pageNum === allpage) {
-                $('[data-js="page-next"]').addClass('disabled');
-              }
+              disablePager(data);
             }
           }).fail(function(jqXHR){
-            var errorcode = jqXHR.status
             pagereset();
-            if(errorcode == 400) {
-              error += '<p class="error-massage">検索文字が入力されていません</p>';
-              $('.message').prepend(error);
-            } else if (errorcode == 429) {
-              error += '<p class="error-massage">リクエスト過多です。<br>しばらく時間を置いてからお試しください。</p>';
-              $('.message').prepend(error);
-            }　else if (errorcode == 0) {
-              error += '<p class="error-massage">通信に失敗しました。インターネットの接続をご確認ください。</p>';
-              $('.message').prepend(error);
-            };
+            showMessage(jqXHR);
           });
         }
       });
