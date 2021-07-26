@@ -40,30 +40,26 @@
         })
         
         $('body').on('click', '[data-js="page-prev"]', function (e) {
+          e.preventDefault();
           if($(this).hasClass('disabled') ){
-            disabled(e);
-          } else {
-            pageNum = pageNum - 1;
-            pagereset();
-            getBooks();
-            e.preventDefault();
+            return false;
           }
+          // pageNum = pageNum - 1;
+          pageNum--
+          pagereset();
+          getBooks();
         })
         
         $('body').on('click', '[data-js="page-next"]', function (e) {
-          if($(this).hasClass('disabled')){
-            disabled(e);
-          } else {
-            pageNum = pageNum + 1;
-            pagereset();
-            getBooks();
-            e.preventDefault();
-          }
-        })
-        
-        function disabled(e) {
           e.preventDefault();
-        }
+          if($(this).hasClass('disabled')){
+            return false;
+          }
+          // pageNum = pageNum + 1;
+          pageNum++
+          pagereset();
+          getBooks();
+        })
         
         function pagereset() {
           $('.lists').empty();
@@ -73,24 +69,23 @@
         
         function filllist(data) {
           var lists = '';
-          $.each(data.Items, function (i) {
-                lists += '<li class=lists__item>'+
-                          '<div class=lists__item__inner>'+
-                            '<a href='+ data.Items[i].Item.itemUrl+ ' class=lists__item__link target=_blank>'+
-                              '<img src='+ data.Items[i].Item.largeImageUrl +' class=lists__item__img alt=>'+
-                              '<p class=lists__item__detail>作品名：'+ data.Items[i].Item.title +'</p>'+
-                              '<p class=lists__item__detail>作者　：'+ data.Items[i].Item.author+'</p>'+
-                              '<p class=lists__item__detail>出版社：'+ data.Items[i].Item.publisherName +'</p>'+
-                            '</a>'+
-                          '</div>'+
-                          '</li>';
-              });
+          $.each(data.Items, function (i, bookData) {
+            lists += '<li class=lists__item>'+
+                      '<div class=lists__item__inner>'+
+                        '<a href='+ bookData.Item.itemUrl+ ' class=lists__item__link target=_blank>'+
+                          '<img src='+ bookData.Item.largeImageUrl +' class=lists__item__img alt=>'+
+                          '<p class=lists__item__detail>作品名：'+ bookData.Item.title +'</p>'+
+                          '<p class=lists__item__detail>作者　：'+ bookData.Item.author+'</p>'+
+                          '<p class=lists__item__detail>出版社：'+ bookData.Item.publisherName +'</p>'+
+                        '</a>'+
+                      '</div>'+
+                      '</li>';
+          });
           $('.lists').prepend(lists);
         }
         
         function showpager(data) {
-          var pager = '';
-          pager += '<div class="pager" data-js="pager">'+
+          var pager = '<div class="pager" data-js="pager">'+
                       '<div class="counter">'+
                         '<span class="counter-current">' + data.page + '</span>'+
                         '/'+
@@ -102,9 +97,6 @@
                       '</div>'+
                     '</div>';
           $('.lists').after(pager);
-        }
-        
-        function disablePager(data) {
           if(pageNum === 1) {
             $('[data-js="page-prev"]').addClass('disabled');
           }
@@ -114,16 +106,22 @@
         }
         
         function showMessage(jqXHR) {
-          if(jqXHR.status == 400) {
-              error = '<p class="error-massage">検索文字が入力されていません</p>';
-              $('.message').prepend(error);
-            } else if (jqXHR.status == 429) {
-              error = '<p class="error-massage">リクエスト過多です。<br>しばらく時間を置いてからお試しください。</p>';
-              $('.message').prepend(error);
-            }　else if (jqXHR.status == 0) {
-              error = '<p class="error-massage">通信に失敗しました。インターネットの接続をご確認ください。</p>';
-              $('.message').prepend(error);
-            };
+          var error = '';
+          switch(jqXHR.status) {
+            case 400:
+            error = '<p class="error-massage">検索文字が入力されていません</p>';
+            break;
+            case 429:
+            error = '<p class="error-massage">リクエスト過多です。<br>しばらく時間を置いてからお試しください。</p>';
+            break;
+            case 0:
+            error = '<p class="error-massage">通信に失敗しました。インターネットの接続をご確認ください。</p>';
+            break;
+            default:
+            error = '<p class="error-massage">予期せぬエラー</p>';
+            break;
+          }
+          $('.message').prepend(error);
         }
         
         function getBooks() {
@@ -140,23 +138,23 @@
             },
           }).done(function(data) {
             if(data.hits === 0) {
-              var error = '';
+              var error = '<p class="error-massage">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</p>';
               pagereset();
-              error = '<p class="error-massage">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</p>';
               $('.message').prepend(error);
-            } else {
-              filllist(data);
-              
-              showpager(data);
-              
-              disablePager(data);
+              return false;
             }
+            filllist(data);
+            
+            showpager(data);
+            
           }).fail(function(jqXHR){
             pagereset();
             
             showMessage(jqXHR);
           });
         }
+        // GET（はがき） urlにくっつけて送る　検索ワードなど　（共有、保存（お気に入り機能等）可能）
+        // POST（封筒） messagebodyにくっつけて送る　個人情報など（機密性高）（大容量でもOK）
       });
       // https://webservice.rakuten.co.jp/api/bookstotalsearch/
       //
